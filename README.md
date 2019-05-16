@@ -1,5 +1,3 @@
-# SBCancel
-Shield barrage cancel
+This script is outdated and I'm too lazy to update it.
 
-### Commands:
-- **sbcancel**: Enables/Disables sbcancel
+Use [TerableCoder's version](https://github.com/TerableCoder/SBCancel) instead.

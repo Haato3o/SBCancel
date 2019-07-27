@@ -1,3 +1,3 @@
 This script is outdated and I'm too lazy to update it.
 
-Use [TerableCoder's version](https://github.com/TerableCoder/SBCancel) instead.
+Use [Lloyderino's version](https://github.com/LLoyderino/SBCancel) instead.

@@ -1,31 +1,30 @@
-const DELAY = 180; // SBCancel delay in ms
-
-// Stuff
-const SB_1 = 181100;
-const SB_2 = 181101;
-const BLOCK = 20200;
-
 module.exports = function SbCancel(mod) {
     let lancer;
     let enabled = true;
     let w;
     let loc;
+    const DELAY = 150; // SBCancel delay in ms
+
+    // Stuff
+    const SB_1 = 181100;
+    const SB_2 = 181101;
+    const BLOCK = 20200;
     
     mod.command.add('sbcancel', () => {
         enabled = !enabled;
         mod.command.message(`SBCancel is now ${enabled ? 'en' : 'dis'}abled.`)
     })
 
-    function dispatchInjectedSBCancel() {
+    function dispatchInjectedSBCancel(zoneId) {
         mod.toServer('C_PRESS_SKILL', 4, {
-            skill: {reserved: 0, npc: false, type: 1, huntingZoneId: 0, id: BLOCK},
+            skill: {reserved: 0, npc: false, type: 1, huntingZoneId: zoneId, id: BLOCK},
             press: true,
             loc: loc,
             w: w
         })
         setTimeout(function(){
             mod.toServer('C_PRESS_SKILL', 4, {
-                skill: {reserved: 0, npc: false, type: 1, huntingZoneId: 0, id: BLOCK},
+                skill: {reserved: 0, npc: false, type: 1, huntingZoneId: zoneId, id: BLOCK},
                 press: false,
                 loc: loc,
                 w: w
@@ -33,7 +32,7 @@ module.exports = function SbCancel(mod) {
         }, 10)
         setTimeout(function(){
             mod.toServer('C_START_SKILL', 7, {
-                skill: {reserved: 0, npc: false, type: 1, huntingZoneId: 0, id: SB_2},
+                skill: {reserved: 0, npc: false, type: 1, huntingZoneId: zoneId, id: SB_2},
                 w: w,
                 loc: loc,
                 dest: {x: 0, y: 0, z: 0},
@@ -46,7 +45,7 @@ module.exports = function SbCancel(mod) {
         }, 20)
     }
     
-    mod.hook('S_LOGIN', 12, (event) => {
+    mod.hook('S_LOGIN', 14, (event) => {
         lancer = ((event.templateId - 10101) % 100) == 1;
     });
 
@@ -59,9 +58,11 @@ module.exports = function SbCancel(mod) {
     mod.hook('C_START_SKILL', 7, {order: -999999}, (event) => {
         if (event.skill.id == SB_1 && lancer && enabled) {
             w = event.w;
+            loc = event.loc;
+
             setTimeout(function(){
-                dispatchInjectedSBCancel()
-            }, DELAY)
+                dispatchInjectedSBCancel(event.skill.huntingZoneId)
+            }, DELAY);
         }
     })
 }
